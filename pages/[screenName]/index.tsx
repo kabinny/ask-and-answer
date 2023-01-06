@@ -1,8 +1,9 @@
-import { Avatar, Box, Text, Flex, Textarea, Button, useToast } from '@chakra-ui/react';
+import { Avatar, Box, Text, Flex, Textarea, Button, useToast, FormControl, Switch, FormLabel } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import reactTextareaAutosize from 'react-textarea-autosize';
 import { useState } from 'react';
 import { ServiceLayout } from '@/components/service_layout';
+import { useAuth } from '@/context/auth_user.context';
 
 const userInfo = {
   uid: 'testid',
@@ -13,7 +14,9 @@ const userInfo = {
 
 const UserHomePage: NextPage = function () {
   const [message, setMessage] = useState('');
+  const [isAnonymous, setAnonymous] = useState(true);
   const toast = useToast();
+  const { authUser } = useAuth();
 
   return (
     <ServiceLayout title="user home" minH="100vh" backgroundColor="gray.50">
@@ -29,7 +32,8 @@ const UserHomePage: NextPage = function () {
         </Box>
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg="white">
           <Flex align="center" p="2">
-            <Avatar size="xs" src="https://bit.ly/broken-link" mr="2" />
+            {/* 익명이거나 유저 정보가 없으면 chakra 기본 아바타가 보여짐 */}
+            <Avatar size="xs" src={isAnonymous ? '' : authUser?.photoURL ?? ''} mr="2" />
             <Textarea
               bg="gray.100"
               border="none"
@@ -67,6 +71,25 @@ const UserHomePage: NextPage = function () {
               등록
             </Button>
           </Flex>
+          <FormControl display="flex" alignItems="center" mt="1" mx="2" pb="2">
+            <Switch
+              size="sm"
+              colorScheme="orange"
+              id="anonymous"
+              mr="1"
+              isChecked={isAnonymous}
+              onChange={() => {
+                if (authUser === null) {
+                  toast({ title: '로그인이 필요합니다', position: 'top-right' });
+                  return;
+                }
+                setAnonymous((prev) => !prev);
+              }}
+            />
+            <FormLabel htmlFor="anonymous" mb="0" fontSize="xx-small">
+              Anonymous
+            </FormLabel>
+          </FormControl>
         </Box>
       </Box>
     </ServiceLayout>
