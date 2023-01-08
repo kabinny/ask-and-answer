@@ -1,7 +1,7 @@
 import FirebaseAdmin from '../firebase_admin';
 import { InAuthUser } from '../in_auth_user';
 
-const MEMBER_COL = 'member';
+const MEMBER_COL = 'members';
 const SCR_NAME_COL = 'screen_names';
 
 type AddResult = { result: true; id: string } | { result: false; message: string };
