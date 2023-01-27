@@ -131,8 +131,11 @@ async function listWithPage({ uid, page = 1, size = 10 }: { uid: string; page?: 
     const messageColDoc = await transaction.get(messageCol);
     const data = messageColDoc.docs.map((mv) => {
       const docData = mv.data() as Omit<InMessageServer, 'id'>;
+      const isDeny = docData.deny !== undefined && docData.deny === true;
+
       const returnData = {
         ...docData,
+        message: isDeny ? '비공개 처리된 메시지 입니다.' : docData.message,
         id: mv.id,
         createdAt: docData.createdAt.toDate().toISOString(),
         replyAt: docData.replyAt ? docData.replyAt.toDate().toISOString() : undefined,
@@ -163,8 +166,10 @@ async function get({ uid, messageId }: { uid: string; messageId: string }) {
       throw new CustomServerError({ statusCode: 400, message: '존재하지 않는 문서' });
     }
     const messageData = messageDoc.data() as InMessageServer;
+    const isDeny = messageData.deny !== undefined && messageData.deny === true;
     return {
       ...messageData,
+      message: isDeny ? '비공개 처리된 메시지 입니다.' : messageData.message,
       id: messageId,
       createdAt: messageData.createdAt.toDate().toISOString(),
       replyAt: messageData.replyAt ? messageData.replyAt.toDate().toISOString() : undefined,
