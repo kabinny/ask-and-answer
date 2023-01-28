@@ -25,6 +25,7 @@ import { InMessage } from '@/models/message/in_message';
 
 interface Props {
   userInfo: InAuthUser | null;
+  screenName: string;
 }
 
 async function postMessage({
@@ -66,7 +67,7 @@ async function postMessage({
   }
 }
 
-const UserHomePage: NextPage<Props> = function ({ userInfo }) {
+const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setAnonymous] = useState(true);
   const [page, setPage] = useState(1);
@@ -232,6 +233,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
               key={`message-item-${userInfo.uid}-${messageData.id}`}
               item={messageData}
               uid={userInfo.uid}
+              screenName={screenName}
               displayName={userInfo.displayName ?? ''}
               photoURL={userInfo.photoURL ?? ''}
               isOwner={isOwner}
@@ -265,9 +267,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: null,
+        screenName: '',
       },
     };
   }
+  const screenNameToStr = Array.isArray(screenName) ? screenName[0] : screenName;
+
   try {
     // server side 이기 때문에 fetch를 사용할 수 없고 '/' 주소를 모르기 때문에 baseurl 명시 필요
     const protocol = process.env.PROTOCOL || 'http';
@@ -278,6 +283,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: userInfoResponse.data ?? null,
+        screenName: screenNameToStr,
       },
     };
   } catch (error) {
@@ -285,6 +291,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: null,
+        screenName: '',
       },
     };
   }
