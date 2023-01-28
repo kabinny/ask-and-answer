@@ -1,7 +1,9 @@
-import { Avatar, Box, Text, Flex } from '@chakra-ui/react';
+import { Avatar, Box, Button, Text, Flex } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import Link from 'next/link';
+import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { ServiceLayout } from '@/components/service_layout';
 import { useAuth } from '@/context/auth_user.context';
 import { InAuthUser } from '@/models/in_auth_user';
@@ -11,9 +13,10 @@ import { InMessage } from '@/models/message/in_message';
 interface Props {
   userInfo: InAuthUser | null;
   messageData: InMessage | null;
+  screenName: string;
 }
 
-const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgData }) {
+const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgData, screenName }) {
   const [messageData, setMessageData] = useState<null | InMessage>(initMsgData);
   const { authUser } = useAuth();
 
@@ -42,6 +45,11 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
   return (
     <ServiceLayout title={`${userInfo.displayName}의 홈`} minH="100vh" backgroundColor="gray.50">
       <Box maxW="md" mx="auto" pt="6">
+        <Link href={`/${screenName}`}>
+          <Button leftIcon={<ChevronLeftIcon />} mb="2" fontSize="sm">
+            {screenName} 홈으로
+          </Button>
+        </Link>
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg="white">
           <Flex p="6">
             <Avatar size="lg" src={userInfo.photoURL ?? ''} mr="2" />
@@ -74,6 +82,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
       props: {
         userInfo: null,
         messageData: null,
+        screenName: '',
       },
     };
   }
@@ -82,6 +91,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
       props: {
         userInfo: null,
         messageData: null,
+        screenName: '',
       },
     };
   }
@@ -92,6 +102,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     const port = process.env.PORT || '3000';
     const baseUrl = `${protocol}://${host}:${port}`;
     const userInfoResponse: AxiosResponse<InAuthUser> = await axios(`${baseUrl}/api/user.info/${screenName}`);
+    const screenNameToStr = Array.isArray(screenName) ? screenName[0] : screenName;
 
     if (
       userInfoResponse.status !== 200 ||
@@ -102,6 +113,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
         props: {
           userInfo: null,
           messageData: null,
+          screenName: screenNameToStr,
         },
       };
     }
@@ -117,6 +129,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
           messageInfoResponse.status !== 200 || messageInfoResponse.data === undefined
             ? null
             : messageInfoResponse.data,
+        screenName: screenNameToStr,
       },
     };
   } catch (error) {
@@ -125,6 +138,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
       props: {
         userInfo: null,
         messageData: null,
+        screenName: '',
       },
     };
   }
