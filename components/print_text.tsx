@@ -1,4 +1,5 @@
 import { Text } from '@chakra-ui/react';
+import './print_text.module.css';
 
 const PrintText = function ({ printText }: { printText: string }) {
   const textCount = printText.length;

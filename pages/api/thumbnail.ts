@@ -4,7 +4,7 @@
 // 사용 패키지: playwright-core, chrome-aws-lambda@6 (6이후 버전은 용량이 너무 크다)
 // 에러가 나서 추가 패키지: npx playwright install
 
-import Chromium from 'chrome-aws-lambda';
+import chromium from 'chrome-aws-lambda';
 import playwright from 'playwright-core';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -15,13 +15,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const host = process.env.HOST || 'localhost';
     const port = process.env.PORT || '3000';
     const baseUrl = `${protocol}://${host}:${port}`;
-    await Chromium.font(`${baseUrl}/Pretendard-Regular.ttf`);
+    await chromium.font(`${baseUrl}/Pretendard-Regular.ttf`);
   }
 
   const browser = await playwright.chromium.launch({
-    args: Chromium.args,
-    executablePath: process.env.NODE_ENV !== 'development' ? await Chromium.executablePath : localChromePath,
-    headless: process.env.NODE_ENV !== 'development' ? Chromium.headless : true,
+    args: chromium.args,
+    executablePath: process.env.NODE_ENV !== 'development' ? await chromium.executablePath : localChromePath,
+    headless: process.env.NODE_ENV !== 'development' ? chromium.headless : true,
   });
 
   // viewport는 트위터 사이즈
