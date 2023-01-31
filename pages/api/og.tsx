@@ -5,7 +5,11 @@ export const config = {
   runtime: 'edge',
 };
 
-export default function handler(req: NextRequest) {
+const font = fetch(new URL('../../assets/Pretendard-Regular.otf', import.meta.url)).then((res) => res.arrayBuffer());
+
+export default async function handler(req: NextRequest) {
+  const fontData = await font;
+
   try {
     const { searchParams } = new URL(req.url);
 
@@ -42,6 +46,7 @@ export default function handler(req: NextRequest) {
               color: 'black',
               zIndex: 10,
               width: '100%',
+              fontFamily: 'Pretendard',
             }}
           >
             {text}
@@ -51,6 +56,13 @@ export default function handler(req: NextRequest) {
       {
         width: 1200,
         height: 681,
+        fonts: [
+          {
+            name: 'Pretendard',
+            data: fontData,
+            style: 'normal',
+          },
+        ],
       },
     );
   } catch (e: any) {
