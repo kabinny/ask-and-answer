@@ -5,7 +5,9 @@ export const config = {
   runtime: 'edge',
 };
 
-const font = fetch(new URL('../../assets/Pretendard-Regular.otf', import.meta.url)).then((res) => res.arrayBuffer());
+const font = fetch(new URL('../../assets/Pretendard-Regular.subset.woff', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
 
 export default async function handler(req: NextRequest) {
   const fontData = await font;
