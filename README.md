@@ -1,6 +1,17 @@
 # blahx2
 익명 질문 서비스
 
+## 실행 방법
+```bash
+yarn install
+yarn dev
+
+or 
+
+npm install
+npm run dev
+```
+
 ## 주요 기능
 * 이벤트를 생성한 뒤 익명으로 질문을 등록합니다.
 * 이벤트 생성한 사용자는 이벤트를 마감할 수 있습니다.
@@ -19,3 +30,8 @@ PORT=3000
 HOST=localhost
 PROTOCOL=http
 ```
+
+## 메모
+### vercel 배포시 이미지 생성이 안되는 오류
+vercel의 기본 node.js 버전이 18이어서 생기는 문제. 
+vercel의 배포 환경 settings의 node.js 버전을 14로 변경.
